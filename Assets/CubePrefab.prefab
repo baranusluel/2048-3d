@@ -503,7 +503,7 @@ TextMesh:
   m_FontSize: 100
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: ebf6e699a47c54f47a102f47333943ed, type: 3}
+  m_Font: {fileID: 12800000, guid: 7adec39752b16584ebfc0dfb56de172c, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4278190080
@@ -524,7 +524,7 @@ TextMesh:
   m_FontSize: 100
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: ebf6e699a47c54f47a102f47333943ed, type: 3}
+  m_Font: {fileID: 12800000, guid: 7adec39752b16584ebfc0dfb56de172c, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4278190080
@@ -545,7 +545,7 @@ TextMesh:
   m_FontSize: 100
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: ebf6e699a47c54f47a102f47333943ed, type: 3}
+  m_Font: {fileID: 12800000, guid: 7adec39752b16584ebfc0dfb56de172c, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4278190080
@@ -566,7 +566,7 @@ TextMesh:
   m_FontSize: 100
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: ebf6e699a47c54f47a102f47333943ed, type: 3}
+  m_Font: {fileID: 12800000, guid: 7adec39752b16584ebfc0dfb56de172c, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4278190080
@@ -587,7 +587,7 @@ TextMesh:
   m_FontSize: 100
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: ebf6e699a47c54f47a102f47333943ed, type: 3}
+  m_Font: {fileID: 12800000, guid: 7adec39752b16584ebfc0dfb56de172c, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4278190080
@@ -608,7 +608,7 @@ TextMesh:
   m_FontSize: 100
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: ebf6e699a47c54f47a102f47333943ed, type: 3}
+  m_Font: {fileID: 12800000, guid: 7adec39752b16584ebfc0dfb56de172c, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4278190080
