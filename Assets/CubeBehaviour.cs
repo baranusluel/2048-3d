@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class CubeBehaviour : MonoBehaviour
 {
-    public Vector3 destPos { get; set; }
     Vector3 oldPos;
-    public float moveSpeed = 1.0f;
+    Vector3 destPos;
+    Transform destCube;
+    int value = 2;
+    public static float moveSpeed;
 
     Dictionary<int, string> colors = new Dictionary<int, string>()
     {
@@ -27,6 +29,7 @@ public class CubeBehaviour : MonoBehaviour
     {
         destPos = transform.position;
         oldPos = transform.position;
+        transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
     }
 
     public void SetValue(int val)
@@ -46,28 +49,58 @@ public class CubeBehaviour : MonoBehaviour
         Color col = new Color();
         ColorUtility.TryParseHtmlString(colors[val], out col);
         GetComponent<Renderer>().material.color = col;
+        value = val;
+    }
+
+    public void SetTarget(Vector3 dest, Transform replace = null)
+    {
+        destPos = dest;
+        destCube = replace;
     }
 	
 	void Update ()
     {
         if (destPos != transform.position)
         {
+            transform.position = Vector3.MoveTowards(transform.position, destPos, moveSpeed * Time.deltaTime);
+            if (destPos == oldPos) return; // Happens when moved back and forth along one axis quickly
             if ((transform.position - oldPos).magnitude < (transform.position - destPos).magnitude)
             {
-                if (transform.localScale.x > 1.1)
-                    transform.localScale -= new Vector3(0.1f, 0.1f, 0.1f);
+                float ratio = (destPos - transform.position).magnitude / (destPos - oldPos).magnitude;
+                if (ratio > 0.7)
+                    transform.localScale = ratio * new Vector3(1.3f, 1.3f, 1.3f);
             }
             else
             {
-                if (transform.localScale.x < 1.3)
-                    transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
+                float ratio = (transform.position - oldPos).magnitude / (destPos - oldPos).magnitude;
+                if (ratio > 0.7)
+                    transform.localScale = ratio * new Vector3(1.3f, 1.3f, 1.3f);
             }
-            transform.position = Vector3.MoveTowards(transform.position, destPos, moveSpeed * Time.deltaTime);
         }
         else if (oldPos != transform.position)
         {
             oldPos = transform.position;
             transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+            GameBehaviour.movingCount--;
+            if (destCube != null)
+            {
+                if (value <= 1024)
+                {
+                    SetValue(2 * value);
+                    Destroy(destCube.gameObject);
+                    destCube = null;
+                    if (value == 2048)
+                    {
+                        print("You Won!");
+                        GameBehaviour.QuitGame();
+                    }
+                }
+                else // Should only happen during testing
+                {
+                    print("Can't go above 2048!");
+                    GameBehaviour.QuitGame();
+                }
+            }
         }
 	}
 }

@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class CameraRotation : MonoBehaviour
 {
-
-    public float speed = 1.0F;
     Vector3 center = new Vector3(3, 3, 3);
     Transform trans;
-    public bool demoMode;
 
-    // Use this for initialization
+    public static bool demoMode;
+    public static TextMesh[] arrowLabels;
+    public static float speed;
+
     void Start ()
     {
         trans = new GameObject().transform;
     }
 	
-	// Update is called once per frame
 	void Update ()
     {
         if (demoMode)
@@ -37,6 +36,11 @@ public class CameraRotation : MonoBehaviour
             trans.eulerAngles = newAng;
             transform.position = trans.TransformPoint(new Vector3(0, 0, -28)) + center;
             transform.LookAt(center);
+            foreach (TextMesh lbl in arrowLabels)
+            {
+                lbl.transform.LookAt(-(transform.position - center) + center);
+            }
         }
+
     }
 }
