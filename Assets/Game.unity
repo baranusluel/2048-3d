@@ -303,6 +303,7 @@ MonoBehaviour:
   demoMode: 0
   rotationSpeed: 300
   cubeMoveSpeed: 30
+  generationMode: 0
 --- !u!4 &1616743498
 Transform:
   m_ObjectHideFlags: 0

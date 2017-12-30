@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameBehaviour : MonoBehaviour
@@ -9,12 +11,18 @@ public class GameBehaviour : MonoBehaviour
     public bool demoMode = false;
     public float rotationSpeed = 1.0F;
     public float cubeMoveSpeed = 1.0f;
+    public enum GenerationModes
+    {
+        normal, demo, won, lost
+    }
+    public GenerationModes generationMode;
 
     int[,,] values = new int[4, 4, 4];
     Transform[,,] cubes = new Transform[4, 4, 4];
     Queue moves = new Queue();
     public static int movingCount = 0;
     Transform clickedArrow;
+    System.Random random = new System.Random();
 
     void Start()
     {
@@ -29,6 +37,28 @@ public class GameBehaviour : MonoBehaviour
 
     void InitializeCubes()
     {
+        switch (generationMode)
+        {
+            case GenerationModes.normal:
+                InitializeCubesNormal();
+                break;
+            case GenerationModes.demo:
+                InitializeCubesDemo();
+                break;
+            case GenerationModes.won:
+                break;
+            case GenerationModes.lost:
+                break;
+        }
+    }
+
+    void InitializeCubesNormal()
+    {
+        GenerateCube(); GenerateCube();
+    }
+
+    void InitializeCubesDemo()
+    {
         for (int x = 0; x < 4; x++)
         {
             for (int y = 0; y < 4; y++)
@@ -37,7 +67,7 @@ public class GameBehaviour : MonoBehaviour
                 {
                     if (x + y - z < 2)
                     {
-                        values[x, y, z] = (int)Mathf.Pow(2, Mathf.RoundToInt((float)(Random.value * /*11->2048*/ 9 + 0.5)));
+                        values[x, y, z] = (int)Mathf.Pow(2, Mathf.RoundToInt((float)(UnityEngine.Random.value * /*11->2048*/ 9 + 0.5)));
                         Transform t = Instantiate(cube, new Vector3(2 * x, 2 * y, 2 * z), Quaternion.identity);
                         cubes[x, y, z] = t;
                         t.GetComponent<CubeBehaviour>().SetValue(values[x, y, z]);
@@ -142,6 +172,10 @@ public class GameBehaviour : MonoBehaviour
                 }
             }
         }
+        if (movingCount != 0) // at least one cube has moved
+        {
+            GenerateCube();
+        }
     }
 
     void MoveCubeRecursive(int x, int y, int z, int[] dir, bool recursion = false)
@@ -170,6 +204,43 @@ public class GameBehaviour : MonoBehaviour
             values[(int)target.x, (int)target.y, (int)target.z] = 2 * values[x, y, z];
             values[x, y, z] = 0;
         }
+    }
+
+    void GenerateCube()
+    {
+        List<int[]> coords = FindEmpty();
+        if (coords.Count > 0)
+        {
+            int[] coord = coords[random.Next(coords.Count)];
+            int value = UnityEngine.Random.value > 0.1 ? 2 : 4;
+            values[coord[0], coord[1], coord[2]] = value;
+            Transform t = Instantiate(cube, new Vector3(2 * coord[0], 2 * coord[1], 2 * coord[2]), Quaternion.identity);
+            cubes[coord[0], coord[1], coord[2]] = t;
+            t.GetComponent<CubeBehaviour>().SetValue(value);
+        }
+        else
+        {
+            // check if game over
+        }
+    }
+
+    List<int[]> FindEmpty()
+    {
+        List<int[]> coords = new List<int[]>();
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int z = 0; z < 4; z++)
+                {
+                    if (values[x, y, z] == 0)
+                    {
+                        coords.Add(new int[] { x, y, z} );
+                    }
+                }
+            }
+        }
+        return coords;
     }
 
     void OnDrawGizmos()

@@ -9,6 +9,7 @@ public class CubeBehaviour : MonoBehaviour
     Transform destCube;
     int value = 2;
     public static float moveSpeed;
+    bool spawning = true;
 
     Dictionary<int, string> colors = new Dictionary<int, string>()
     {
@@ -29,7 +30,7 @@ public class CubeBehaviour : MonoBehaviour
     {
         destPos = transform.position;
         oldPos = transform.position;
-        transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+        transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
     }
 
     public void SetValue(int val)
@@ -56,6 +57,7 @@ public class CubeBehaviour : MonoBehaviour
     {
         destPos = dest;
         destCube = replace;
+        spawning = false;
     }
 	
 	void Update ()
@@ -101,6 +103,13 @@ public class CubeBehaviour : MonoBehaviour
                     GameBehaviour.QuitGame();
                 }
             }
+        }
+        else if (spawning)
+        {
+            if (transform.localScale.x < 1.3)
+                transform.localScale += new Vector3(0.05f, 0.05f, 0.05f);
+            else
+                spawning = false;
         }
 	}
 }
