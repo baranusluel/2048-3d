@@ -24,7 +24,7 @@ public class CameraRotation : MonoBehaviour
             newAng.y += 50f * Time.deltaTime;
             newAng.x = 15 * Mathf.Sin(newAng.y * Mathf.PI / 180) + 30;
             trans.eulerAngles = newAng;
-            transform.position = trans.TransformPoint(new Vector3(0, 0, -28)) + center;
+            transform.position = trans.TransformPoint(new Vector3(0, 0, -26)) + center;
             transform.LookAt(center);
         }
         else if (Input.GetMouseButton(0))
@@ -34,7 +34,7 @@ public class CameraRotation : MonoBehaviour
             if (newX < 89.9 || newX > 270.1)
                 newAng.x = newX;
             trans.eulerAngles = newAng;
-            transform.position = trans.TransformPoint(new Vector3(0, 0, -28)) + center;
+            transform.position = trans.TransformPoint(new Vector3(0, 0, -26)) + center;
             transform.LookAt(center);
             foreach (TextMesh lbl in arrowLabels)
             {

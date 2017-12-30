@@ -14,6 +14,7 @@ public class GameBehaviour : MonoBehaviour
     Transform[,,] cubes = new Transform[4, 4, 4];
     Queue moves = new Queue();
     public static int movingCount = 0;
+    Transform clickedArrow;
 
     void Start()
     {
@@ -76,7 +77,26 @@ public class GameBehaviour : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits = Physics.RaycastAll(ray);
             if (hits.Length > 0 && hits[0].transform.tag.Equals("Arrow"))
-                moves.Enqueue(hits[0].transform.TransformDirection(new Vector3(0, 1, 0)));
+            {
+                clickedArrow = hits[0].transform;
+                print(clickedArrow.localScale);
+                clickedArrow.localScale = new Vector3(1.05f, 1.05f, 1.05f);
+                Color clr = clickedArrow.gameObject.GetComponent<Renderer>().material.color + new Color(0.2f, 0.2f, 0.2f, 0.2f);
+                clickedArrow.gameObject.GetComponent<Renderer>().material.color = clr;
+            }
+        }
+        else if (Input.GetMouseButtonUp(0) && clickedArrow != null)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits = Physics.RaycastAll(ray);
+            if (hits.Length > 0 && hits[0].transform.tag.Equals("Arrow") && hits[0].transform == clickedArrow)
+            {
+                moves.Enqueue(clickedArrow.TransformDirection(new Vector3(0, 1, 0)));
+            }
+            clickedArrow.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            Color clr = clickedArrow.gameObject.GetComponent<Renderer>().material.color - new Color(0.2f, 0.2f, 0.2f, 0.2f);
+            clickedArrow.gameObject.GetComponent<Renderer>().material.color = clr;
+            clickedArrow = null;
         }
 
         if (Input.GetKeyDown(KeyCode.W))
