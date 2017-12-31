@@ -114,7 +114,6 @@ public class GameBehaviour : MonoBehaviour
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits = Physics.RaycastAll(ray, float.MaxValue, ~(1 << 9)).OrderBy(h=>h.distance).ToArray();
-            print(hits.Length);
             if (hits.Length > 0 && hits[0].transform.tag.Equals("Arrow"))
             {
                 clickedArrow = hits[0].transform;
