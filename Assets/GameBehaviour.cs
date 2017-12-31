@@ -22,7 +22,7 @@ public class GameBehaviour : MonoBehaviour
 
     int[,,] values = new int[4, 4, 4];
     Transform[,,] cubes = new Transform[4, 4, 4];
-    Queue moves = new Queue();
+    public static Queue moves = new Queue();
     public static int movingCount = 0;
     Transform clickedArrow;
     System.Random random = new System.Random();

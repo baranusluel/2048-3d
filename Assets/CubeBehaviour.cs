@@ -10,7 +10,9 @@ public class CubeBehaviour : MonoBehaviour
     int value = 2;
     public static float moveSpeed;
     bool spawning = true;
+    bool merging = false;
     public static float spawnSpeed;
+    public bool selfDestruct { get;  set; }    
 
     Dictionary<int, string> colors = new Dictionary<int, string>()
     {
@@ -32,6 +34,7 @@ public class CubeBehaviour : MonoBehaviour
         destPos = transform.position;
         oldPos = transform.position;
         transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        selfDestruct = false;
     }
 
     public void SetValue(int val)
@@ -71,8 +74,7 @@ public class CubeBehaviour : MonoBehaviour
     {
         if (destPos != transform.position)
         {
-            transform.position = Vector3.MoveTowards(transform.position, destPos, moveSpeed * Time.deltaTime);
-            if (destPos == oldPos) return; // Happens when moved back and forth along one axis quickly
+            transform.position = Vector3.MoveTowards(transform.position, destPos, moveSpeed * Time.deltaTime * Mathf.Pow(2, GameBehaviour.moves.Count));
             if ((transform.position - oldPos).magnitude < (transform.position - destPos).magnitude)
             {
                 float ratio = (destPos - transform.position).magnitude / (destPos - oldPos).magnitude;
@@ -94,24 +96,34 @@ public class CubeBehaviour : MonoBehaviour
             if (destCube != null)
             {
                 SetValue(2 * value);
-                Destroy(destCube.gameObject);
+                destCube.GetComponent<CubeBehaviour>().selfDestruct = true;
                 destCube = null;
+                merging = true;
+                transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 if (value == 2048)
                 {
                     print("You Won!");
                 }
             }
         }
-        else if (spawning)
+        if (spawning || merging)
         {
-            Vector3 newScale = transform.localScale + new Vector3(1, 1, 1) * Time.deltaTime * spawnSpeed;
-            if (newScale.x <= 1.3)
+            float coeff = (merging ? -0.5f : 1);
+            Vector3 newScale = transform.localScale + new Vector3(1, 1, 1) * Time.deltaTime * spawnSpeed * coeff;
+            if (coeff * newScale.x <= coeff * 1.3)
                 transform.localScale = newScale;
             else
             {
                 transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
                 spawning = false;
+                merging = false;
             }
         }
-	}
+    }
+
+    void LateUpdate()
+    {
+        if (selfDestruct)
+            Destroy(this.gameObject);
+    }
 }
