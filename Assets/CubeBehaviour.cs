@@ -30,7 +30,7 @@ public class CubeBehaviour : MonoBehaviour
     {
         destPos = transform.position;
         oldPos = transform.position;
-        transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+        transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
     }
 
     public void SetValue(int val)
@@ -107,7 +107,7 @@ public class CubeBehaviour : MonoBehaviour
         else if (spawning)
         {
             if (transform.localScale.x < 1.3)
-                transform.localScale += new Vector3(0.05f, 0.05f, 0.05f);
+                transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
             else
                 spawning = false;
         }

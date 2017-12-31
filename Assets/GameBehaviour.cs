@@ -16,6 +16,8 @@ public class GameBehaviour : MonoBehaviour
         normal, demo, won, lost
     }
     public GenerationModes generationMode;
+    public float startAngle = 45;
+    public float startupAnimationSpeed = 1.0F;
 
     int[,,] values = new int[4, 4, 4];
     Transform[,,] cubes = new Transform[4, 4, 4];
@@ -28,15 +30,20 @@ public class GameBehaviour : MonoBehaviour
     {
         CameraRotation.demoMode = demoMode;
         CameraRotation.speed = rotationSpeed;
+        CameraRotation.startAngle = startAngle;
+        CameraRotation.startupSpeed = startupAnimationSpeed;
         CubeBehaviour.moveSpeed = cubeMoveSpeed;
 
         if (!demoMode)
             InitializeArrows();
-        InitializeCubes();
+        else
+            generationMode = GenerationModes.demo;
+        StartCoroutine(InitializeCubes());
     }
 
-    void InitializeCubes()
+    public IEnumerator InitializeCubes()
     {
+        yield return new WaitForSeconds(0.5f);
         switch (generationMode)
         {
             case GenerationModes.normal:
@@ -50,6 +57,7 @@ public class GameBehaviour : MonoBehaviour
             case GenerationModes.lost:
                 break;
         }
+        yield return null;
     }
 
     void InitializeCubesNormal()
@@ -105,11 +113,11 @@ public class GameBehaviour : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit[] hits = Physics.RaycastAll(ray);
+            RaycastHit[] hits = Physics.RaycastAll(ray, float.MaxValue, ~(1 << 9)).OrderBy(h=>h.distance).ToArray();
+            print(hits.Length);
             if (hits.Length > 0 && hits[0].transform.tag.Equals("Arrow"))
             {
                 clickedArrow = hits[0].transform;
-                print(clickedArrow.localScale);
                 clickedArrow.localScale = new Vector3(1.05f, 1.05f, 1.05f);
                 Color clr = clickedArrow.gameObject.GetComponent<Renderer>().material.color + new Color(0.2f, 0.2f, 0.2f, 0.2f);
                 clickedArrow.gameObject.GetComponent<Renderer>().material.color = clr;
@@ -118,7 +126,7 @@ public class GameBehaviour : MonoBehaviour
         else if (Input.GetMouseButtonUp(0) && clickedArrow != null)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit[] hits = Physics.RaycastAll(ray);
+            RaycastHit[] hits = Physics.RaycastAll(ray, float.MaxValue, ~(1 << 9)).OrderBy(h => h.distance).ToArray();
             if (hits.Length > 0 && hits[0].transform.tag.Equals("Arrow") && hits[0].transform == clickedArrow)
             {
                 moves.Enqueue(clickedArrow.TransformDirection(new Vector3(0, 1, 0)));
@@ -174,7 +182,7 @@ public class GameBehaviour : MonoBehaviour
         }
         if (movingCount != 0) // at least one cube has moved
         {
-            GenerateCube();
+            GenerateCube(); GenerateCube();
         }
     }
 
