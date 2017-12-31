@@ -29,7 +29,7 @@ public class CameraRotation : MonoBehaviour
         while (Mathf.Abs(newAng.y) < Mathf.Abs(startAngle))
         {
             float delta = newAng.y * (newAng.y - startAngle) / -Mathf.Pow(startAngle/2, 2) + 0.1f;
-            newAng.y += delta * startupSpeed * Mathf.Sign(startAngle);
+            newAng.y += delta * startupSpeed * Mathf.Sign(startAngle) * Time.deltaTime;
             newAng.x = 30 * (1-Mathf.Cos(3 * newAng.y * Mathf.PI / 180));
             trans.eulerAngles = newAng;
             transform.position = trans.TransformPoint(new Vector3(0, 0, -26)) + center;
@@ -62,8 +62,8 @@ public class CameraRotation : MonoBehaviour
     {
         if (!demoMode && Input.GetMouseButton(0))
         {
-            Vector3 newAng = trans.eulerAngles + new Vector3(0, Input.GetAxis("Mouse X") * speed * Time.deltaTime, 0);
-            float newX = newAng.x + -Input.GetAxis("Mouse Y") * speed * Time.deltaTime;
+            Vector3 newAng = trans.eulerAngles + new Vector3(0, Input.GetAxis("Mouse X") * speed, 0);
+            float newX = newAng.x + -Input.GetAxis("Mouse Y") * speed;
             if (newX < 89.9 || newX > 270.1)
                 newAng.x = newX;
             trans.eulerAngles = newAng;

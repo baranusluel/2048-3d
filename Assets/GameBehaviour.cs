@@ -18,6 +18,7 @@ public class GameBehaviour : MonoBehaviour
     public GenerationModes generationMode;
     public float startAngle = 45;
     public float startupAnimationSpeed = 1.0F;
+    public float cubeSpawnSpeed = 1.0F;
 
     int[,,] values = new int[4, 4, 4];
     Transform[,,] cubes = new Transform[4, 4, 4];
@@ -33,6 +34,7 @@ public class GameBehaviour : MonoBehaviour
         CameraRotation.startAngle = startAngle;
         CameraRotation.startupSpeed = startupAnimationSpeed;
         CubeBehaviour.moveSpeed = cubeMoveSpeed;
+        CubeBehaviour.spawnSpeed = cubeSpawnSpeed;
 
         if (!demoMode)
             InitializeArrows();

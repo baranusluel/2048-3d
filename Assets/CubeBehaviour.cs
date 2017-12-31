@@ -10,6 +10,7 @@ public class CubeBehaviour : MonoBehaviour
     int value = 2;
     public static float moveSpeed;
     bool spawning = true;
+    public static float spawnSpeed;
 
     Dictionary<int, string> colors = new Dictionary<int, string>()
     {
@@ -106,10 +107,14 @@ public class CubeBehaviour : MonoBehaviour
         }
         else if (spawning)
         {
-            if (transform.localScale.x < 1.3)
-                transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
+            Vector3 newScale = transform.localScale + new Vector3(1, 1, 1) * Time.deltaTime * spawnSpeed;
+            if (newScale.x <= 1.3)
+                transform.localScale = newScale;
             else
+            {
+                transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
                 spawning = false;
+            }
         }
 	}
 }

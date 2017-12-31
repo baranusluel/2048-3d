@@ -731,11 +731,12 @@ MonoBehaviour:
   cube: {fileID: 4306575162018288, guid: de8bf6272de1aec49af93c382bdc8837, type: 2}
   arrow: {fileID: 4582337205535072, guid: 6e467cc60cb2fff459f97c9cbbccac90, type: 2}
   demoMode: 0
-  rotationSpeed: 300
+  rotationSpeed: 10
   cubeMoveSpeed: 30
   generationMode: 0
   startAngle: 30
-  startupAnimationSpeed: 0.8
+  startupAnimationSpeed: 40
+  cubeSpawnSpeed: 5
 --- !u!4 &1616743498
 Transform:
   m_ObjectHideFlags: 0
