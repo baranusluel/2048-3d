@@ -47,9 +47,15 @@ public class CubeBehaviour : MonoBehaviour
             TextMesh text = (TextMesh)child;
             text.text = val.ToString();
             text.characterSize = size;
+            if (val > 2048)
+                text.color = Color.white;
         }
         Color col = new Color();
-        ColorUtility.TryParseHtmlString(colors[val], out col);
+        string colStr = "#000000";
+        if (val <= 2048)
+            colStr = colors[val];
+        //print(colStr);
+        ColorUtility.TryParseHtmlString(colStr, out col);
         GetComponent<Renderer>().material.color = col;
         value = val;
     }
@@ -87,21 +93,12 @@ public class CubeBehaviour : MonoBehaviour
             GameBehaviour.movingCount--;
             if (destCube != null)
             {
-                if (value <= 1024)
+                SetValue(2 * value);
+                Destroy(destCube.gameObject);
+                destCube = null;
+                if (value == 2048)
                 {
-                    SetValue(2 * value);
-                    Destroy(destCube.gameObject);
-                    destCube = null;
-                    if (value == 2048)
-                    {
-                        print("You Won!");
-                        GameBehaviour.QuitGame();
-                    }
-                }
-                else // Should only happen during testing
-                {
-                    print("Can't go above 2048!");
-                    GameBehaviour.QuitGame();
+                    print("You Won!");
                 }
             }
         }

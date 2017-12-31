@@ -55,8 +55,10 @@ public class GameBehaviour : MonoBehaviour
                 InitializeCubesDemo();
                 break;
             case GenerationModes.won:
+                InitializeCubesWon();
                 break;
             case GenerationModes.lost:
+                InitializeCubesLost();
                 break;
         }
         yield return null;
@@ -82,6 +84,40 @@ public class GameBehaviour : MonoBehaviour
                         cubes[x, y, z] = t;
                         t.GetComponent<CubeBehaviour>().SetValue(values[x, y, z]);
                     }
+                }
+            }
+        }
+    }
+
+    void InitializeCubesWon()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int z = 0; z < 4; z++)
+                {
+                    values[x, y, z] = 1024;
+                    Transform t = Instantiate(cube, new Vector3(2 * x, 2 * y, 2 * z), Quaternion.identity);
+                    cubes[x, y, z] = t;
+                    t.GetComponent<CubeBehaviour>().SetValue(values[x, y, z]);
+                }
+            }
+        }
+    }
+
+    void InitializeCubesLost()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int z = 0; z < 4; z++)
+                {
+                    values[x, y, z] = (x + y + z) % 2 == 0 ? 2 : 4;
+                    Transform t = Instantiate(cube, new Vector3(2 * x, 2 * y, 2 * z), Quaternion.identity);
+                    cubes[x, y, z] = t;
+                    t.GetComponent<CubeBehaviour>().SetValue(values[x, y, z]);
                 }
             }
         }
