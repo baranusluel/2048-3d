@@ -132,25 +132,28 @@ public class GameBehaviour : MonoBehaviour
 
     void InitializeArrows()
     {
+        #if UNITY_ANDROID || UNITY_IOS
+            float scale = 2.0f;
+            float offset1 = 4f;
+            float offset2 = 2f;
+            String[] chars = { "", "", "", "", "", "" };
+        #else
+            float scale = 1.0f;
+            float offset1 = 3.5f;
+            float offset2 = 2.5f;
+            String[] chars = { "Q", "E", "D", "A", "W", "S" };
+        #endif
         Quaternion[] angles = { Quaternion.identity, Quaternion.Euler(180, 0, 0), Quaternion.Euler(0, 0, -90), Quaternion.Euler(0, 0, 90), Quaternion.Euler(90, 0, 0), Quaternion.Euler(-90, 0, 0) };
-        Transform ar0 = Instantiate(arrow, new Vector3(3.5f, 8f, 2.5f), angles[0]);
-        TextMesh lbl0 = (TextMesh)ar0.GetComponentInChildren(typeof(TextMesh));
-        Transform ar1 = Instantiate(arrow, new Vector3(3.5f, -2f, 3.5f), angles[1]);
-        TextMesh lbl1 = (TextMesh)ar1.GetComponentInChildren(typeof(TextMesh));
-        lbl1.text = "E"; lbl1.transform.Rotate(-angles[1].eulerAngles);
-        Transform ar2 = Instantiate(arrow, new Vector3(8f, 2.5f, 2.5f), angles[2]);
-        TextMesh lbl2 = (TextMesh)ar2.GetComponentInChildren(typeof(TextMesh));
-        lbl2.text = "D"; lbl2.transform.Rotate(-angles[2].eulerAngles);
-        Transform ar3 = Instantiate(arrow, new Vector3(-2f, 3.5f, 2.5f), angles[3]);
-        TextMesh lbl3 = (TextMesh)ar3.GetComponentInChildren(typeof(TextMesh));
-        lbl3.text = "A"; lbl3.transform.Rotate(-angles[3].eulerAngles);
-        Transform ar4 = Instantiate(arrow, new Vector3(3.5f, 3.5f, 8f), angles[4]);
-        TextMesh lbl4 = (TextMesh)ar4.GetComponentInChildren(typeof(TextMesh));
-        lbl4.text = "W"; lbl4.transform.Rotate(-angles[4].eulerAngles);
-        Transform ar5 = Instantiate(arrow, new Vector3(3.5f, 2.5f, -2f), angles[5]);
-        TextMesh lbl5 = (TextMesh)ar5.GetComponentInChildren(typeof(TextMesh));
-        lbl5.text = "S"; lbl5.transform.Rotate(-angles[5].eulerAngles);
-        CameraRotation.arrowLabels = new TextMesh[] { lbl0, lbl1, lbl2, lbl3, lbl4, lbl5 };
+        Vector3[] positions = { new Vector3(offset1, 8, offset2), new Vector3(offset1, -2, offset1), new Vector3(8, offset2, offset2), new Vector3(-2, offset1, offset2), new Vector3(offset1, offset1, 8), new Vector3(offset1, offset2, -2) };
+        for (int i = 0; i < 6; i++)
+        {
+            Transform ar = Instantiate(arrow, positions[i], angles[i]);
+            ar.localScale = ar.localScale * scale;
+            TextMesh lbl = (TextMesh)ar.GetComponentInChildren(typeof(TextMesh));
+            lbl.text = chars[i];
+            lbl.transform.Rotate(-angles[i].eulerAngles);
+            CameraRotation.arrowLabels[i] = lbl;
+        }
     }
 
     void sliderCallBack(float value)
