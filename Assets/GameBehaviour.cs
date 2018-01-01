@@ -30,6 +30,8 @@ public class GameBehaviour : MonoBehaviour
     System.Random random = new System.Random();
     public static float sensitivitySlider = 1;
     Slider slider;
+    public static bool paused = false;
+    GameObject pausePanel;
 
     void Start()
     {
@@ -42,6 +44,9 @@ public class GameBehaviour : MonoBehaviour
 
         slider = GameObject.Find("Slider").GetComponent<Slider>();
         slider.onValueChanged.AddListener(delegate { sliderCallBack(slider.value); });
+
+        pausePanel = GameObject.Find("Panel");
+        pausePanel.SetActive(false);
 
         if (!demoMode)
             InitializeArrows();
@@ -163,6 +168,14 @@ public class GameBehaviour : MonoBehaviour
 
     void Update ()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            paused = !paused;
+            pausePanel.SetActive(paused);
+        }
+        if (paused)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -201,10 +214,6 @@ public class GameBehaviour : MonoBehaviour
             moves.Enqueue(new Vector3(0, 1, 0));
         else if (Input.GetKeyDown(KeyCode.E))
             moves.Enqueue(new Vector3(0, -1, 0));
-        else if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            // pause / quit menu
-        }
         else
         {
             // show help menu listing possible keys
