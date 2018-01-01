@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameBehaviour : MonoBehaviour
 {
@@ -26,6 +28,8 @@ public class GameBehaviour : MonoBehaviour
     public static int movingCount = 0;
     Transform clickedArrow;
     System.Random random = new System.Random();
+    public static float sensitivitySlider = 1;
+    Slider slider;
 
     void Start()
     {
@@ -35,6 +39,9 @@ public class GameBehaviour : MonoBehaviour
         CameraRotation.startupSpeed = startupAnimationSpeed;
         CubeBehaviour.moveSpeed = cubeMoveSpeed;
         CubeBehaviour.spawnSpeed = cubeSpawnSpeed;
+
+        slider = GameObject.Find("Slider").GetComponent<Slider>();
+        slider.onValueChanged.AddListener(delegate { sliderCallBack(slider.value); });
 
         if (!demoMode)
             InitializeArrows();
@@ -144,6 +151,11 @@ public class GameBehaviour : MonoBehaviour
         TextMesh lbl5 = (TextMesh)ar5.GetComponentInChildren(typeof(TextMesh));
         lbl5.text = "S"; lbl5.transform.Rotate(-angles[5].eulerAngles);
         CameraRotation.arrowLabels = new TextMesh[] { lbl0, lbl1, lbl2, lbl3, lbl4, lbl5 };
+    }
+
+    void sliderCallBack(float value)
+    {
+        sensitivitySlider = Mathf.Pow(value, 3 / 2) / Mathf.Pow(5, 3 / 2);
     }
 
     void Update ()

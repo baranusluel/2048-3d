@@ -60,10 +60,18 @@ public class CameraRotation : MonoBehaviour
 
     void Update ()
     {
-        if (!demoMode && Input.GetMouseButton(0))
+        if (!demoMode && (Input.GetMouseButton(0) || Input.touchCount > 0))
         {
-            Vector3 newAng = trans.eulerAngles + new Vector3(0, Input.GetAxis("Mouse X") * speed / Mathf.Sqrt(Screen.height), 0);
-            float newX = newAng.x - (Input.GetAxis("Mouse Y") * speed / Mathf.Sqrt(Screen.height));
+            float deltaX = Input.GetAxis("Mouse X");
+            float deltaY = Input.GetAxis("Mouse Y");
+            if (Input.touchCount > 0)
+            {
+                deltaX = Input.GetTouch(0).deltaPosition.x;
+                deltaY = Input.GetTouch(0).deltaPosition.y;
+            }
+            float dpi = Screen.dpi != 0 ? Screen.dpi : 96;
+            Vector3 newAng = trans.eulerAngles + new Vector3(0, deltaX * speed * GameBehaviour.sensitivitySlider / dpi / (Screen.width + Screen.height), 0);
+            float newX = newAng.x - (deltaY * speed * GameBehaviour.sensitivitySlider / dpi / (Screen.width + Screen.height));
             if (newX < 89.9 || newX > 270.1)
                 newAng.x = newX;
             trans.eulerAngles = newAng;
