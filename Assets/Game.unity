@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.02
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
@@ -32,9 +32,9 @@ RenderSettings:
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
-  m_DefaultReflectionMode: 0
+  m_DefaultReflectionMode: 1
   m_DefaultReflectionResolution: 128
-  m_ReflectionBounces: 3
+  m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
@@ -50,9 +50,9 @@ LightmapSettings:
     m_IndirectOutputScale: 1
     m_AlbedoBoost: 1
     m_TemporalCoherenceThreshold: 1
-    m_EnvironmentLightingMode: 0
+    m_EnvironmentLightingMode: 1
     m_EnableBakedLightmaps: 1
-    m_EnableRealtimeLightmaps: 1
+    m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
     serializedVersion: 9
     m_Resolution: 2
@@ -1327,11 +1327,11 @@ MonoBehaviour:
   arrow: {fileID: 4582337205535072, guid: 6e467cc60cb2fff459f97c9cbbccac90, type: 2}
   demoMode: 0
   rotationSpeed: 500000
-  cubeMoveSpeed: 30
+  cubeMoveSpeed: 50
   generationMode: 0
   startAngle: 30
   startupAnimationSpeed: 40
-  cubeSpawnSpeed: 5
+  cubeSpawnSpeed: 8
 --- !u!4 &1616743498
 Transform:
   m_ObjectHideFlags: 0

@@ -16,8 +16,8 @@ public class CubeBehaviour : MonoBehaviour
 
     Dictionary<int, string> colors = new Dictionary<int, string>()
     {
-        {2, "#ecdfc7"},
-        {4, "#efcbac"},
+        {2, "#eee4da"},
+        {4, "#ede0c8"},
         {8, "#f2b179"},
         {16, "#f59563"},
         {32, "#f67c5f"},
@@ -45,15 +45,16 @@ public class CubeBehaviour : MonoBehaviour
         else if (val >= 128)
             size = 0.04f;
         Component[] children = gameObject.GetComponentsInChildren(typeof(TextMesh));
+        Color col = new Color();
+        ColorUtility.TryParseHtmlString("#edeae6", out col);
         foreach (Component child in children)
         {
             TextMesh text = (TextMesh)child;
             text.text = val.ToString();
             text.characterSize = size;
-            if (val > 2048)
-                text.color = Color.white;
+            if (val > 4)
+                text.GetComponent<Renderer>().material.color = col;
         }
-        Color col = new Color();
         string colStr = "#000000";
         if (val <= 2048)
             colStr = colors[val];

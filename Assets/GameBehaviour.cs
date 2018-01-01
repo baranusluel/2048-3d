@@ -51,7 +51,10 @@ public class GameBehaviour : MonoBehaviour
         if (!demoMode)
             InitializeArrows();
         else
+        {
             generationMode = GenerationModes.demo;
+            slider.gameObject.transform.parent.gameObject.SetActive(false); // Disable UI Canvas if demoMode
+        }
         StartCoroutine(InitializeCubes());
     }
 
@@ -173,7 +176,7 @@ public class GameBehaviour : MonoBehaviour
             paused = !paused;
             pausePanel.SetActive(paused);
         }
-        if (paused)
+        if (paused || demoMode)
             return;
 
         if (Input.GetMouseButtonDown(0))
