@@ -45,7 +45,7 @@ public class CameraRotation : MonoBehaviour
     void AdjustDistance()
     {
         width = Screen.width; height = Screen.height;
-        if (height > width)
+        if (height > width*0.7)
             distance = 15 / cam.aspect * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
         else
             distance = 15 * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
@@ -98,8 +98,8 @@ public class CameraRotation : MonoBehaviour
                 deltaY = t.deltaPosition.y * Time.deltaTime / t.deltaTime;
             }
             float dpi = Screen.dpi != 0 ? Screen.dpi : 96;
-            Vector3 newAng = trans.eulerAngles + new Vector3(0, deltaX * speed * GameBehaviour.sensitivitySlider / dpi / (Screen.width + Screen.height), 0);
-            float newX = newAng.x - (deltaY * speed * GameBehaviour.sensitivitySlider / dpi / (Screen.width + Screen.height));
+            Vector3 newAng = trans.eulerAngles + new Vector3(0, deltaX * speed * (float)GameBehaviour.sensitivitySlider / dpi / (Screen.width + Screen.height), 0);
+            float newX = newAng.x - (deltaY * speed * (float)GameBehaviour.sensitivitySlider / dpi / (Screen.width + Screen.height));
             if (newX < 89.9 || newX > 270.1)
                 newAng.x = newX;
             TransformCamera(newAng, true);

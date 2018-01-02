@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameBehaviour : MonoBehaviour
 {
@@ -28,12 +29,13 @@ public class GameBehaviour : MonoBehaviour
     public static int movingCount = 0;
     Transform clickedArrow;
     System.Random random = new System.Random();
-    public static float sensitivitySlider = 1;
+    public static double sensitivitySlider = 1;
     Slider slider;
     public static bool paused = false;
     GameObject pausePanel;
     public static GameObject notificationPanel;
     public static bool won = false;
+    Button newGameBtn;
 
     void Start()
     {
@@ -45,13 +47,17 @@ public class GameBehaviour : MonoBehaviour
         CubeBehaviour.spawnSpeed = cubeSpawnSpeed;
 
         slider = GameObject.Find("Slider").GetComponent<Slider>();
-        slider.onValueChanged.AddListener(delegate { SliderCallBack(slider.value); });
+        slider.value = (int)(Math.Pow(sensitivitySlider, 2.0 / 3.0) * 5);
+        slider.onValueChanged.AddListener(delegate { SliderCallback(slider.value); });
 
         pausePanel = GameObject.Find("Pause Panel");
         pausePanel.SetActive(false);
 
         notificationPanel = GameObject.Find("Notification Panel");
         notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
+
+        newGameBtn = GameObject.Find("New Game Button").GetComponent<Button>();
+        newGameBtn.onClick.AddListener(() => ButtonCallback());
 
         InitializeGrid();
         if (!demoMode)
@@ -204,9 +210,19 @@ public class GameBehaviour : MonoBehaviour
         }
     }
 
-    void SliderCallBack(float value)
+    void SliderCallback(float value)
+    {        
+        sensitivitySlider = Math.Pow(value / 5.0, 3.0 / 2.0);
+    }
+
+    void ButtonCallback()
     {
-        sensitivitySlider = Mathf.Pow(value, 3 / 2) / Mathf.Pow(5, 3 / 2);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // Reset all the static variables
+        moves = new Queue();
+        movingCount = 0;
+        paused = false;
+        won = false;
     }
 
     void Update ()
@@ -401,6 +417,7 @@ public class GameBehaviour : MonoBehaviour
         ColorUtility.TryParseHtmlString("#bbada0", out col);
         notificationPanel.GetComponent<Image>().color = col;
         notificationPanel.GetComponentInChildren<Text>().text = "Game Over!";
+        notificationPanel.GetComponentInChildren<Text>().fontSize = 14;
         StartCoroutine(SlideNotification(true));
     }
 
@@ -409,10 +426,10 @@ public class GameBehaviour : MonoBehaviour
         Vector2 pos;
         do
         {
-            pos = Vector2.MoveTowards(GameBehaviour.notificationPanel.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 100.0f * Time.deltaTime);
+            pos = Vector2.MoveTowards(GameBehaviour.notificationPanel.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 10), 100.0f * Time.deltaTime);
             GameBehaviour.notificationPanel.GetComponent<RectTransform>().anchoredPosition = pos;
             yield return null;
-        } while (pos != new Vector2(0, 0));
+        } while (pos != new Vector2(0, 10));
         if (lost)
             yield break;
         yield return new WaitForSeconds(5);
