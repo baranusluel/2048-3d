@@ -106,10 +106,8 @@ public class CubeBehaviour : MonoBehaviour
                 merging = false;
                 animationMerging = true;
                 transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                if (value == 2048)
-                {
-                    print("You Won!");
-                }
+                if (value == 2048 && !GameBehaviour.won)
+                    GameObject.Find("Game Object").GetComponent<GameBehaviour>().WinGame();
             }
         }
         if (spawning || animationMerging)

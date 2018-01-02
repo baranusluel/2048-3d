@@ -21,7 +21,7 @@ public class CameraRotation : MonoBehaviour
     {
         trans = new GameObject().transform;
         cam = transform.GetComponent<Camera>();
-        adjustDistance();
+        AdjustDistance();
 
         if (!demoMode)
             StartCoroutine(StartupAnimation());
@@ -29,7 +29,7 @@ public class CameraRotation : MonoBehaviour
             StartCoroutine(DemoAnimation());
     }
 
-    void transformCamera(Vector3 newAng, bool arrows = false)
+    void TransformCamera(Vector3 newAng, bool arrows = false)
     {
         trans.eulerAngles = newAng;
         transform.position = trans.TransformPoint(new Vector3(0, 0, -distance)) + center;
@@ -42,14 +42,14 @@ public class CameraRotation : MonoBehaviour
         }
     }
 
-    void adjustDistance()
+    void AdjustDistance()
     {
         width = Screen.width; height = Screen.height;
         if (height > width)
             distance = 15 / cam.aspect * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
         else
             distance = 15 * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-        transformCamera(trans.eulerAngles);
+        TransformCamera(trans.eulerAngles);
     }
 
     IEnumerator StartupAnimation()
@@ -61,7 +61,7 @@ public class CameraRotation : MonoBehaviour
             float delta = newAng.y * (newAng.y - startAngle) / -Mathf.Pow(startAngle/2, 2) + 0.1f;
             newAng.y += delta * startupSpeed * Mathf.Sign(startAngle) * Time.deltaTime;
             newAng.x = 30 * (1-Mathf.Cos(3 * newAng.y * Mathf.PI / 180));
-            transformCamera(newAng, true);
+            TransformCamera(newAng, true);
             yield return null;
         }
     }
@@ -70,13 +70,13 @@ public class CameraRotation : MonoBehaviour
     {
         Vector3 newAng = trans.eulerAngles;
         newAng.x = 15;
-        transformCamera(newAng);
+        TransformCamera(newAng);
         yield return new WaitForSeconds(0.5f);
         while (true)
         {
             newAng.y += 25f * Time.deltaTime;
             newAng.x = 15 + 15 * Mathf.Sin(newAng.y * Mathf.PI / 180);
-            transformCamera(newAng);
+            TransformCamera(newAng);
             yield return null;
         }
     }
@@ -84,7 +84,7 @@ public class CameraRotation : MonoBehaviour
     void Update ()
     {
         if (width != Screen.width || height != Screen.height)
-            adjustDistance();
+            AdjustDistance();
 
         if (!demoMode && !GameBehaviour.paused && (Input.GetMouseButton(0) || Input.touchCount > 0))
         {
@@ -102,7 +102,7 @@ public class CameraRotation : MonoBehaviour
             float newX = newAng.x - (deltaY * speed * GameBehaviour.sensitivitySlider / dpi / (Screen.width + Screen.height));
             if (newX < 89.9 || newX > 270.1)
                 newAng.x = newX;
-            transformCamera(newAng, true);
+            TransformCamera(newAng, true);
         }
 
     }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class GameBehaviour : MonoBehaviour
 {
@@ -33,6 +32,8 @@ public class GameBehaviour : MonoBehaviour
     Slider slider;
     public static bool paused = false;
     GameObject pausePanel;
+    public static GameObject notificationPanel;
+    public static bool won = false;
 
     void Start()
     {
@@ -44,10 +45,13 @@ public class GameBehaviour : MonoBehaviour
         CubeBehaviour.spawnSpeed = cubeSpawnSpeed;
 
         slider = GameObject.Find("Slider").GetComponent<Slider>();
-        slider.onValueChanged.AddListener(delegate { sliderCallBack(slider.value); });
+        slider.onValueChanged.AddListener(delegate { SliderCallBack(slider.value); });
 
-        pausePanel = GameObject.Find("Panel");
+        pausePanel = GameObject.Find("Pause Panel");
         pausePanel.SetActive(false);
+
+        notificationPanel = GameObject.Find("Notification Panel");
+        notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
 
         InitializeGrid();
         if (!demoMode)
@@ -200,7 +204,7 @@ public class GameBehaviour : MonoBehaviour
         }
     }
 
-    void sliderCallBack(float value)
+    void SliderCallBack(float value)
     {
         sensitivitySlider = Mathf.Pow(value, 3 / 2) / Mathf.Pow(5, 3 / 2);
     }
@@ -284,6 +288,8 @@ public class GameBehaviour : MonoBehaviour
         {
             GenerateCube(); GenerateCube();
         }
+        else
+            CheckLose();
     }
 
     void MoveCubeRecursive(int x, int y, int z, int[] dir, bool recursion = false)
@@ -328,10 +334,6 @@ public class GameBehaviour : MonoBehaviour
             cubes[coord[0], coord[1], coord[2]] = t;
             t.GetComponent<CubeBehaviour>().SetValue(value);
         }
-        else
-        {
-            // check if game over
-        }
     }
 
     List<int[]> FindEmpty()
@@ -351,6 +353,75 @@ public class GameBehaviour : MonoBehaviour
             }
         }
         return coords;
+    }
+
+    public void CheckLose()
+    {
+        List<int[]> coords = FindEmpty();
+        if (coords.Count == 0)
+        {
+            for (int x = 0; x < 4; x++)
+            {
+                for (int y = 0; y < 4; y++)
+                {
+                    for (int z = 0; z < 4; z++)
+                    {
+                        int val = values[x, y, z];
+                        int[] adjacent = { values[BoundToRange(x + 1), BoundToRange(y), BoundToRange(z)], values[BoundToRange(x - 1), BoundToRange(y), BoundToRange(z)],
+                            values[BoundToRange(x), BoundToRange(y + 1), BoundToRange(z)], values[BoundToRange(x), BoundToRange(y - 1), BoundToRange(z)],
+                            values[BoundToRange(x), BoundToRange(y), BoundToRange(z + 1)], values[BoundToRange(x), BoundToRange(y), BoundToRange(z - 1)] };
+                        if (Array.IndexOf(adjacent, val) < 0)
+                        {
+                            LoseGame();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public int BoundToRange(int val)
+    {
+        if (val > 3) val = 3;
+        if (val < 0) val = 0;
+        return val;
+    }
+
+    public void WinGame()
+    {
+        won = true;
+        StartCoroutine(SlideNotification());
+    }
+
+    public void LoseGame()
+    {
+        won = true;
+        Color col;
+        ColorUtility.TryParseHtmlString("#bbada0", out col);
+        notificationPanel.GetComponent<Image>().color = col;
+        notificationPanel.GetComponentInChildren<Text>().text = "Game Over!";
+        StartCoroutine(SlideNotification(true));
+    }
+
+    public IEnumerator SlideNotification(bool lost = false)
+    {
+        Vector2 pos;
+        do
+        {
+            pos = Vector2.MoveTowards(GameBehaviour.notificationPanel.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 100.0f * Time.deltaTime);
+            GameBehaviour.notificationPanel.GetComponent<RectTransform>().anchoredPosition = pos;
+            yield return null;
+        } while (pos != new Vector2(0, 0));
+        if (lost)
+            yield break;
+        yield return new WaitForSeconds(5);
+        do
+        {
+            pos = Vector2.MoveTowards(GameBehaviour.notificationPanel.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, -36), 100.0f * Time.deltaTime);
+            GameBehaviour.notificationPanel.GetComponent<RectTransform>().anchoredPosition = pos;
+            yield return null;
+        } while (pos != new Vector2(0, -36));
     }
 
     void OnDrawGizmos()
