@@ -10,12 +10,13 @@ public class GameBehaviour : MonoBehaviour
 {
     public Transform cube;
     public Transform arrow;
+    public Transform grid;
     public bool demoMode = false;
     public float rotationSpeed = 1.0F;
     public float cubeMoveSpeed = 1.0f;
     public enum GenerationModes
     {
-        normal, demo, won, lost
+        normal, demo, testingWon, testingLost, testingOther
     }
     public GenerationModes generationMode;
     public float startAngle = 45;
@@ -48,6 +49,7 @@ public class GameBehaviour : MonoBehaviour
         pausePanel = GameObject.Find("Panel");
         pausePanel.SetActive(false);
 
+        InitializeGrid();
         if (!demoMode)
             InitializeArrows();
         else
@@ -69,11 +71,14 @@ public class GameBehaviour : MonoBehaviour
             case GenerationModes.demo:
                 InitializeCubesDemo();
                 break;
-            case GenerationModes.won:
+            case GenerationModes.testingWon:
                 InitializeCubesWon();
                 break;
-            case GenerationModes.lost:
+            case GenerationModes.testingLost:
                 InitializeCubesLost();
+                break;
+            case GenerationModes.testingOther:
+                InitializeCubesOther();
                 break;
         }
         yield return null;
@@ -137,6 +142,27 @@ public class GameBehaviour : MonoBehaviour
             }
         }
     }
+    void InitializeCubesOther()
+    {
+        for (int x = 0; x < 1; x++)
+        {
+            for (int y = 0; y < 1; y++)
+            {
+                for (int z = 0; z < 4; z++)
+                {
+                    int value = 2;
+                    if (z == 0)
+                        value = 4;
+                    else if (z == 3)
+                        value = 8;
+                    values[x, y, z] = value;
+                    Transform t = Instantiate(cube, new Vector3(2 * x, 2 * y, 2 * z), Quaternion.identity);
+                    cubes[x, y, z] = t;
+                    t.GetComponent<CubeBehaviour>().SetValue(values[x, y, z]);
+                }
+            }
+        }
+    }
 
     void InitializeArrows()
     {
@@ -161,6 +187,16 @@ public class GameBehaviour : MonoBehaviour
             lbl.text = chars[i];
             lbl.transform.Rotate(-angles[i].eulerAngles);
             CameraRotation.arrowLabels[i] = lbl;
+        }
+    }
+
+    void InitializeGrid()
+    {
+        Quaternion[] angles = { Quaternion.Euler(180, 0, 0), Quaternion.identity, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, -90), Quaternion.Euler(-90, 0, 0), Quaternion.Euler(90, 0, 0) };
+        Vector3[] positions = { new Vector3(3, 7, 3), new Vector3(3, -1, 3), new Vector3(7, 3, 3), new Vector3(-1, 3, 3), new Vector3(3, 3, 7), new Vector3(3, 3, -1) };
+        for (int i = 0; i < 6; i++)
+        {
+            Transform ar = Instantiate(grid, positions[i], angles[i]);
         }
     }
 
@@ -268,6 +304,8 @@ public class GameBehaviour : MonoBehaviour
         }
         else if (values[(int)target.x, (int)target.y, (int)target.z] == values[x, y, z])
         {
+            if (cubes[(int)target.x, (int)target.y, (int)target.z].GetComponent<CubeBehaviour>().merging)
+                return;
             if (!recursion)
                 movingCount++;
             cubes[x, y, z].GetComponent<CubeBehaviour>().SetTarget(target * 2, cubes[(int)target.x, (int)target.y, (int)target.z]);

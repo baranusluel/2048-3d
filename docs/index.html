@@ -12,7 +12,7 @@
       var gameInstance = UnityLoader.instantiate("gameContainer", "Build/docs.json", {onProgress: UnityProgress});
     </script>
   </head>
-  <body>
+  <body onresize="resized()">
     <div class="webgl-content">
       <div id="gameContainer"></div>
     </div>

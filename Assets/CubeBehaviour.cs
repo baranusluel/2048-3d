@@ -10,7 +10,8 @@ public class CubeBehaviour : MonoBehaviour
     int value = 2;
     public static float moveSpeed;
     bool spawning = true;
-    bool merging = false;
+    public bool merging { get; set; }
+    bool animationMerging = false;
     public static float spawnSpeed;
     public bool selfDestruct { get;  set; }    
 
@@ -35,6 +36,7 @@ public class CubeBehaviour : MonoBehaviour
         oldPos = transform.position;
         transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         selfDestruct = false;
+        merging = false;
     }
 
     public void SetValue(int val)
@@ -69,6 +71,8 @@ public class CubeBehaviour : MonoBehaviour
         destPos = dest;
         destCube = replace;
         spawning = false;
+        if (replace != null)
+            merging = true;
     }
 	
 	void Update ()
@@ -99,7 +103,8 @@ public class CubeBehaviour : MonoBehaviour
                 SetValue(2 * value);
                 destCube.GetComponent<CubeBehaviour>().selfDestruct = true;
                 destCube = null;
-                merging = true;
+                merging = false;
+                animationMerging = true;
                 transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 if (value == 2048)
                 {
@@ -107,9 +112,9 @@ public class CubeBehaviour : MonoBehaviour
                 }
             }
         }
-        if (spawning || merging)
+        if (spawning || animationMerging)
         {
-            float coeff = (merging ? -0.5f : 1);
+            float coeff = (animationMerging ? -0.5f : 1);
             Vector3 newScale = transform.localScale + new Vector3(1, 1, 1) * Time.deltaTime * spawnSpeed * coeff;
             if (coeff * newScale.x <= coeff * 1.3)
                 transform.localScale = newScale;
@@ -117,7 +122,7 @@ public class CubeBehaviour : MonoBehaviour
             {
                 transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
                 spawning = false;
-                merging = false;
+                animationMerging = false;
             }
         }
     }

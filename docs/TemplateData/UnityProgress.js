@@ -24,3 +24,12 @@ function UnityProgress(gameInstance, progress) {
   if (progress == 1)
     gameInstance.logo.style.display = "none";
 }
+
+function resized() {
+  var canvas = document.getElementById("#canvas");
+  var gameContainer = document.getElementById("gameContainer");
+  if (canvas.width != gameContainer.clientWidth || canvas.height != gameContainer.clientHeight) {
+    canvas.width = gameContainer.clientWidth;
+    canvas.height = gameContainer.clientHeight;
+  }
+}
