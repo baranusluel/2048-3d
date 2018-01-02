@@ -1667,7 +1667,7 @@ MonoBehaviour:
   demoMode: 0
   rotationSpeed: 500000
   cubeMoveSpeed: 50
-  generationMode: 2
+  generationMode: 0
   startAngle: 30
   startupAnimationSpeed: 40
   cubeSpawnSpeed: 8
