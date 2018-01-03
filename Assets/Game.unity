@@ -1217,7 +1217,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Congratulations, you reached 2048! You can keep going...
+  m_Text: <Notification>
 --- !u!222 &1320054794
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1551,7 +1551,7 @@ MonoBehaviour:
     m_FontStyle: 1
     m_BestFit: 1
     m_MinSize: 0
-    m_MaxSize: 50
+    m_MaxSize: 80
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -1667,7 +1667,7 @@ MonoBehaviour:
   demoMode: 0
   rotationSpeed: 500000
   cubeMoveSpeed: 50
-  generationMode: 0
+  generationMode: 2
   startAngle: 30
   startupAnimationSpeed: 40
   cubeSpawnSpeed: 8

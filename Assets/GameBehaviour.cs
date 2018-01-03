@@ -35,7 +35,9 @@ public class GameBehaviour : MonoBehaviour
     GameObject pausePanel;
     public static GameObject notificationPanel;
     public static bool won = false;
+    bool lost = false;
     Button newGameBtn;
+    int generateNum = 3;
 
     void Start()
     {
@@ -96,7 +98,7 @@ public class GameBehaviour : MonoBehaviour
 
     void InitializeCubesNormal()
     {
-        GenerateCube(); GenerateCube();
+        GenerateCube();
     }
 
     void InitializeCubesDemo()
@@ -302,7 +304,12 @@ public class GameBehaviour : MonoBehaviour
         }
         if (movingCount != 0) // at least one cube has moved
         {
-            GenerateCube(); GenerateCube();
+            GenerateCube();
+            if (lost) // If previously determined to have lost, but was able to move, remove lost notification (not supposed to happen, but happened once during testing)
+            {
+                GameBehaviour.notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
+                lost = false;
+            }
         }
         else
             CheckLose();
@@ -340,15 +347,18 @@ public class GameBehaviour : MonoBehaviour
 
     void GenerateCube()
     {
-        List<int[]> coords = FindEmpty();
-        if (coords.Count > 0)
+        for (int i = 0; i < generateNum; i++)
         {
-            int[] coord = coords[random.Next(coords.Count)];
-            int value = UnityEngine.Random.value > 0.1 ? 2 : 4;
-            values[coord[0], coord[1], coord[2]] = value;
-            Transform t = Instantiate(cube, new Vector3(2 * coord[0], 2 * coord[1], 2 * coord[2]), Quaternion.identity);
-            cubes[coord[0], coord[1], coord[2]] = t;
-            t.GetComponent<CubeBehaviour>().SetValue(value);
+            List<int[]> coords = FindEmpty();
+            if (coords.Count > 0)
+            {
+                int[] coord = coords[random.Next(coords.Count)];
+                int value = UnityEngine.Random.value > 0.1 ? 2 : 4;
+                values[coord[0], coord[1], coord[2]] = value;
+                Transform t = Instantiate(cube, new Vector3(2 * coord[0], 2 * coord[1], 2 * coord[2]), Quaternion.identity);
+                cubes[coord[0], coord[1], coord[2]] = t;
+                t.GetComponent<CubeBehaviour>().SetValue(value);
+            }
         }
     }
 
@@ -407,12 +417,17 @@ public class GameBehaviour : MonoBehaviour
     public void WinGame()
     {
         won = true;
+        Color col;
+        ColorUtility.TryParseHtmlString("#EDC53FFF", out col);
+        notificationPanel.GetComponent<Image>().color = col;
+        notificationPanel.GetComponentInChildren<Text>().text = "Congratulations, you reached 2048! You can keep going...";
+        notificationPanel.GetComponentInChildren<Text>().fontSize = 11;
         StartCoroutine(SlideNotification());
     }
 
     public void LoseGame()
     {
-        won = true;
+        lost = true;
         Color col;
         ColorUtility.TryParseHtmlString("#bbada0", out col);
         notificationPanel.GetComponent<Image>().color = col;
