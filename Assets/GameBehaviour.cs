@@ -38,6 +38,10 @@ public class GameBehaviour : MonoBehaviour
     bool lost = false;
     Button newGameBtn;
     int generateNum = 3;
+    int score = 0;
+    int highscore = 0;
+    Text scoreText;
+    Text highscoreText;
 
     void Start()
     {
@@ -49,7 +53,12 @@ public class GameBehaviour : MonoBehaviour
         CubeBehaviour.spawnSpeed = cubeSpawnSpeed;
 
         slider = GameObject.Find("Slider").GetComponent<Slider>();
-        slider.value = (int)(Math.Pow(sensitivitySlider, 2.0 / 3.0) * 5);
+        int old = PlayerPrefs.GetInt("sensitivity");
+        if (old != 0)
+        {
+            slider.value = old;
+            sensitivitySlider = Math.Pow(old / 5.0, 3.0 / 2.0);
+        }
         slider.onValueChanged.AddListener(delegate { SliderCallback(slider.value); });
 
         pausePanel = GameObject.Find("Pause Panel");
@@ -61,14 +70,24 @@ public class GameBehaviour : MonoBehaviour
         newGameBtn = GameObject.Find("New Game Button").GetComponent<Button>();
         newGameBtn.onClick.AddListener(() => ButtonCallback());
 
+        scoreText = GameObject.Find("Score Text").GetComponent<Text>();
+        highscoreText = GameObject.Find("Best Score Text").GetComponent<Text>();
+        highscore = PlayerPrefs.GetInt("highscore");
+        highscoreText.text = highscore.ToString();
+
+        #if !UNITY_EDITOR
+            generationMode = GenerationModes.normal;
+        #endif
+
         InitializeGrid();
         if (!demoMode)
             InitializeArrows();
         else
         {
             generationMode = GenerationModes.demo;
-            slider.gameObject.transform.parent.gameObject.SetActive(false); // Disable UI Canvas if demoMode
+            GameObject.Find("Game Canvas").SetActive(false); // Disable UI Canvas if demoMode
         }
+
         StartCoroutine(InitializeCubes());
     }
 
@@ -213,8 +232,9 @@ public class GameBehaviour : MonoBehaviour
     }
 
     void SliderCallback(float value)
-    {        
+    {
         sensitivitySlider = Math.Pow(value / 5.0, 3.0 / 2.0);
+        PlayerPrefs.SetInt("sensitivity", (int)value);
     }
 
     void ButtonCallback()
@@ -304,6 +324,7 @@ public class GameBehaviour : MonoBehaviour
         }
         if (movingCount != 0) // at least one cube has moved
         {
+            scoreText.text = score.ToString();
             GenerateCube();
             if (lost) // If previously determined to have lost, but was able to move, remove lost notification (not supposed to happen, but happened once during testing)
             {
@@ -340,8 +361,11 @@ public class GameBehaviour : MonoBehaviour
             cubes[x, y, z].GetComponent<CubeBehaviour>().SetTarget(target * 2, cubes[(int)target.x, (int)target.y, (int)target.z]);
             cubes[(int)target.x, (int)target.y, (int)target.z] = cubes[x, y, z];
             cubes[x, y, z] = null;
-            values[(int)target.x, (int)target.y, (int)target.z] = 2 * values[x, y, z];
+            int val = 2 * values[x, y, z];
+            values[(int)target.x, (int)target.y, (int)target.z] = val;
             values[x, y, z] = 0;
+            score += val;
+            CheckHighscore();
         }
     }
 
@@ -425,7 +449,7 @@ public class GameBehaviour : MonoBehaviour
         StartCoroutine(SlideNotification());
     }
 
-    public void LoseGame()
+    void LoseGame()
     {
         lost = true;
         Color col;
@@ -434,6 +458,23 @@ public class GameBehaviour : MonoBehaviour
         notificationPanel.GetComponentInChildren<Text>().text = "Game Over!";
         notificationPanel.GetComponentInChildren<Text>().fontSize = 14;
         StartCoroutine(SlideNotification(true));
+    }
+
+    void CheckHighscore()
+    {
+        if (score > highscore)
+        {
+            highscore = score;
+            highscoreText.text = highscore.ToString();
+            PlayerPrefs.SetInt("highscore", highscore);
+        }
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        // This is already called automaticaly on OnApplicationQuit, but we call it on
+        // OnApplicationPause as well for iOS
+        PlayerPrefs.Save();
     }
 
     public IEnumerator SlideNotification(bool lost = false)
