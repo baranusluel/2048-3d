@@ -31,8 +31,8 @@ public class GameBehaviour : MonoBehaviour
     System.Random random = new System.Random();
     public static double sensitivitySlider = 1;
     Slider slider;
-    GameObject settingsPanel;
-    GameObject infoPanel;
+    static GameObject settingsPanel;
+    static GameObject infoPanel;
     public static GameObject notificationPanel;
     public static bool won = false;
     bool lost = false;
@@ -42,19 +42,22 @@ public class GameBehaviour : MonoBehaviour
     Text scoreText;
     Text highscoreText;
     public static bool mainMenu = true;
+    static GameObject sidebarPanel;
+    public static bool landscape = true;
 
     void Start()
     {
         if (mainMenu)
         {
             demoMode = true;
-            GameObject.Find("Main Camera").GetComponent<Camera>().rect = new Rect(0, 0, 1, 1);
+            Camera.main.rect = new Rect(0, 0, 1, 1);
             GameObject.Find("Game Canvas").SetActive(false);
             GameObject.Find("Start Button").GetComponent<Button>().onClick.AddListener(() => StartButtonCallback());
         }
         else
         {
             GameObject.Find("Main Menu Canvas").SetActive(false);
+
             slider = GameObject.Find("Slider").GetComponent<Slider>();
             int old = PlayerPrefs.GetInt("sensitivity");
             if (old != 0)
@@ -64,11 +67,12 @@ public class GameBehaviour : MonoBehaviour
             }
             slider.onValueChanged.AddListener(delegate { SliderCallback(slider.value); });
 
+            sidebarPanel = GameObject.Find("Sidebar Panel");
+            landscape = true;
             settingsPanel = GameObject.Find("Settings Panel");
             settingsPanel.SetActive(false);
             infoPanel = GameObject.Find("Info Panel");
             infoPanel.SetActive(false);
-
             notificationPanel = GameObject.Find("Notification Panel");
             notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
 
@@ -526,6 +530,64 @@ public class GameBehaviour : MonoBehaviour
         } while (pos != new Vector2(0, -36));
     }
 
+    public static void RotateDisplay(bool landscape)
+    {
+        if (GameBehaviour.landscape == landscape)
+            return;
+        GameBehaviour.landscape = landscape;
+        RectTransform sidebar = GameBehaviour.sidebarPanel.GetComponent<RectTransform>();
+        RectTransform notif = GameBehaviour.notificationPanel.GetComponent<RectTransform>();
+        RectTransform settings = GameBehaviour.settingsPanel.GetComponent<RectTransform>();
+        RectTransform info = GameBehaviour.infoPanel.GetComponent<RectTransform>();
+        RectTransform logo = sidebar.transform.Find("Logo").GetComponent<RectTransform>();
+        RectTransform score = sidebar.transform.Find("Score Panel").GetComponent<RectTransform>();
+        RectTransform best = sidebar.transform.Find("Best Score Panel").GetComponent<RectTransform>();
+        RectTransform newBtn = sidebar.transform.Find("New Game Button").GetComponent<RectTransform>();
+        RectTransform settingsBtn = sidebar.transform.Find("Settings Button").GetComponent<RectTransform>();
+        RectTransform infoBtn = sidebar.transform.Find("Info Button").GetComponent<RectTransform>();
+        Camera cam = Camera.main;
+        if (landscape)
+        {
+            sidebar.anchorMin = new Vector2(0, 0);
+            sidebar.anchorMax = new Vector2(0.3f, 1);
+            notif.anchorMin = new Vector2(0.3f, 0);
+            settings.anchorMin = settings.anchorMax = info.anchorMin = info.anchorMax = new Vector2(0.65f, 0.5f);
+            cam.rect = new Rect(0.3f, 0, 0.7f, 1);
+            logo.anchorMin = new Vector2(0.05f, 0.75f);
+            logo.anchorMax = new Vector2(0.95f, 1);
+            score.anchorMin = new Vector2(0.2f, 0.6f);
+            score.anchorMax = new Vector2(0.8f, 0.75f);
+            best.anchorMin = new Vector2(0.2f, 0.4f);
+            best.anchorMax = new Vector2(0.8f, 0.55f);
+            newBtn.anchorMin = new Vector2(0.2f, 0.2f);
+            newBtn.anchorMax = new Vector2(0.8f, 0.35f);
+            settingsBtn.anchorMin = new Vector2(0.2f, 0.05f);
+            settingsBtn.anchorMax = new Vector2(0.45f, 0.15f);
+            infoBtn.anchorMin = new Vector2(0.55f, 0.05f);
+            infoBtn.anchorMax = new Vector2(0.8f, 0.15f);
+        }
+        else
+        {
+            sidebar.anchorMin = new Vector2(0, 0.7f);
+            sidebar.anchorMax = new Vector2(1, 1);
+            notif.anchorMin = new Vector2(0, 0);
+            settings.anchorMin = settings.anchorMax = info.anchorMin = info.anchorMax = new Vector2(0.5f, 0.35f);
+            cam.rect = new Rect(0, 0, 1, 0.7f);
+            logo.anchorMin = new Vector2(0.05f, 0.6f);
+            logo.anchorMax = new Vector2(0.55f, 0.9f);
+            score.anchorMin = new Vector2(0.05f, 0.1f);
+            score.anchorMax = new Vector2(0.275f, 0.45f);
+            best.anchorMin = new Vector2(0.325f, 0.1f);
+            best.anchorMax = new Vector2(0.55f, 0.45f);
+            newBtn.anchorMin = new Vector2(0.6f, 0.1f);
+            newBtn.anchorMax = new Vector2(0.95f, 0.45f);
+            settingsBtn.anchorMin = new Vector2(0.6f, 0.65f);
+            settingsBtn.anchorMax = new Vector2(0.75f, 0.85f);
+            infoBtn.anchorMin = new Vector2(0.8f, 0.65f);
+            infoBtn.anchorMax = new Vector2(0.95f, 0.85f);
+        }
+    }
+
     void OnDrawGizmos()
     {
         for (int x = 0; x < 4; x++)
@@ -538,14 +600,5 @@ public class GameBehaviour : MonoBehaviour
                 }
             }
         }
-    }
-
-    public static void QuitGame()
-    {
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #else
-            Application.Quit();
-        #endif
     }
 }

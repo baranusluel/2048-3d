@@ -9,6 +9,7 @@ public class CameraRotation : MonoBehaviour
     Camera cam;
     float width;
     float height;
+    int startingDist = 14;
 
     public static bool demoMode;
     public static TextMesh[] arrowLabels = new TextMesh[6];
@@ -44,10 +45,34 @@ public class CameraRotation : MonoBehaviour
     void AdjustDistance()
     {
         width = Screen.width; height = Screen.height;
-        if (height > width*0.7)
-            distance = 15 / cam.aspect * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+
+        if (!demoMode)
+        {
+            if (height > width)
+            {
+                GameBehaviour.RotateDisplay(false);
+                if (height * 0.7 > width)
+                    distance = startingDist / cam.aspect * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+                else
+                    distance = startingDist * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            }
+            else
+            {
+                GameBehaviour.RotateDisplay(true);
+                if (height < width * 0.7)
+                    distance = startingDist * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+                else
+                    distance = startingDist / cam.aspect * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            }
+        }
         else
-            distance = 15 * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        {
+            if (height > width)
+                distance = startingDist / cam.aspect * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            else
+                distance = startingDist * 0.5f / Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        }
+
         TransformCamera(trans.eulerAngles);
     }
 
