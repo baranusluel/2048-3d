@@ -86,7 +86,7 @@ public class CameraRotation : MonoBehaviour
         if (width != Screen.width || height != Screen.height)
             AdjustDistance();
 
-        if (!demoMode && !GameBehaviour.paused && (Input.GetMouseButton(0) || Input.touchCount > 0))
+        if (!demoMode && (Input.GetMouseButton(0) || Input.touchCount > 0))
         {
             float deltaX = Input.GetAxis("Mouse X");
             float deltaY = Input.GetAxis("Mouse Y");

@@ -31,12 +31,10 @@ public class GameBehaviour : MonoBehaviour
     System.Random random = new System.Random();
     public static double sensitivitySlider = 1;
     Slider slider;
-    public static bool paused = false;
-    GameObject pausePanel;
+    GameObject settingsPanel;
     public static GameObject notificationPanel;
     public static bool won = false;
     bool lost = false;
-    Button newGameBtn;
     int generateNum = 3;
     int score = 0;
     int highscore = 0;
@@ -61,14 +59,17 @@ public class GameBehaviour : MonoBehaviour
         }
         slider.onValueChanged.AddListener(delegate { SliderCallback(slider.value); });
 
-        pausePanel = GameObject.Find("Pause Panel");
-        pausePanel.SetActive(false);
+        settingsPanel = GameObject.Find("Settings Panel");
+        settingsPanel.SetActive(false);
 
         notificationPanel = GameObject.Find("Notification Panel");
         notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
 
-        newGameBtn = GameObject.Find("New Game Button").GetComponent<Button>();
-        newGameBtn.onClick.AddListener(() => ButtonCallback());
+        GameObject.Find("New Game Button").GetComponent<Button>().onClick.AddListener(() => NewGameButtonCallback());
+        GameObject.Find("Settings Button").GetComponent<Button>().onClick.AddListener(() => SettingsButtonCallback());
+        GameObject.Find("Info Button").GetComponent<Button>().onClick.AddListener(() => InfoButtonCallback());
+        Button back = settingsPanel.GetComponentInChildren<Button>();
+        back.onClick.AddListener(() => BackButtonCallback(back));
 
         scoreText = GameObject.Find("Score Text").GetComponent<Text>();
         highscoreText = GameObject.Find("Best Score Text").GetComponent<Text>();
@@ -237,24 +238,33 @@ public class GameBehaviour : MonoBehaviour
         PlayerPrefs.SetInt("sensitivity", (int)value);
     }
 
-    void ButtonCallback()
+    void NewGameButtonCallback()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         // Reset all the static variables
         moves = new Queue();
         movingCount = 0;
-        paused = false;
         won = false;
+    }
+
+    void SettingsButtonCallback()
+    {
+        settingsPanel.SetActive(true);
+    }
+
+    void InfoButtonCallback()
+    {
+        
+    }
+
+    void BackButtonCallback(Button btn)
+    {
+        btn.transform.parent.gameObject.SetActive(false);
     }
 
     void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            paused = !paused;
-            pausePanel.SetActive(paused);
-        }
-        if (paused || demoMode)
+        if (demoMode)
             return;
 
         if (Input.GetMouseButtonDown(0))
@@ -445,7 +455,6 @@ public class GameBehaviour : MonoBehaviour
         ColorUtility.TryParseHtmlString("#EDC53FFF", out col);
         notificationPanel.GetComponent<Image>().color = col;
         notificationPanel.GetComponentInChildren<Text>().text = "Congratulations, you reached 2048! You can keep going...";
-        notificationPanel.GetComponentInChildren<Text>().fontSize = 11;
         StartCoroutine(SlideNotification());
     }
 
@@ -456,7 +465,6 @@ public class GameBehaviour : MonoBehaviour
         ColorUtility.TryParseHtmlString("#bbada0", out col);
         notificationPanel.GetComponent<Image>().color = col;
         notificationPanel.GetComponentInChildren<Text>().text = "Game Over!";
-        notificationPanel.GetComponentInChildren<Text>().fontSize = 14;
         StartCoroutine(SlideNotification(true));
     }
 
