@@ -6,7 +6,10 @@
     <title>%UNITY_WEB_NAME%</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-    <script src="TemplateData/UnityProgress.js"></script>  
+    <link rel="stylesheet" href="TemplateData/bootstrap.min.css">
+    <script type="text/javascript" src="TemplateData/tweenjs-0.6.2.min.js"></script>
+    <script type="text/javascript" src="TemplateData/CSSPlugin.js"></script>
+    <script src="TemplateData/UnityProgress.js"></script>
     <script src="%UNITY_WEBGL_LOADER_URL%"></script>
     <script>
       var gameInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
@@ -15,6 +18,12 @@
   <body onresize="resized()">
     <div class="webgl-content">
       <div id="gameContainer"></div>
+    </div>
+    <div id="loadingBox">
+      <div id="bgBar"></div>
+      <div id="progressBar"></div>
+      <p id="loadingInfo">Loading...</p>
+      <img id="spinner" src="TemplateData/spinner.gif" style="display: none; margin: 0 auto" />
     </div>
   </body>
 </html>
