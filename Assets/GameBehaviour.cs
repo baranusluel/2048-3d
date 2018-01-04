@@ -32,6 +32,7 @@ public class GameBehaviour : MonoBehaviour
     public static double sensitivitySlider = 1;
     Slider slider;
     GameObject settingsPanel;
+    GameObject infoPanel;
     public static GameObject notificationPanel;
     public static bool won = false;
     bool lost = false;
@@ -61,6 +62,8 @@ public class GameBehaviour : MonoBehaviour
 
         settingsPanel = GameObject.Find("Settings Panel");
         settingsPanel.SetActive(false);
+        infoPanel = GameObject.Find("Info Panel");
+        infoPanel.SetActive(false);
 
         notificationPanel = GameObject.Find("Notification Panel");
         notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
@@ -70,6 +73,8 @@ public class GameBehaviour : MonoBehaviour
         GameObject.Find("Info Button").GetComponent<Button>().onClick.AddListener(() => InfoButtonCallback());
         Button back = settingsPanel.GetComponentInChildren<Button>();
         back.onClick.AddListener(() => BackButtonCallback(back));
+        Button back2 = infoPanel.GetComponentInChildren<Button>();
+        back2.onClick.AddListener(() => BackButtonCallback(back2));
 
         scoreText = GameObject.Find("Score Text").GetComponent<Text>();
         highscoreText = GameObject.Find("Best Score Text").GetComponent<Text>();
@@ -250,11 +255,15 @@ public class GameBehaviour : MonoBehaviour
     void SettingsButtonCallback()
     {
         settingsPanel.SetActive(true);
+        if (infoPanel.activeSelf)
+            infoPanel.SetActive(false);
     }
 
     void InfoButtonCallback()
     {
-        
+        infoPanel.SetActive(true);
+        if (settingsPanel.activeSelf)
+            settingsPanel.SetActive(false);
     }
 
     void BackButtonCallback(Button btn)
@@ -267,7 +276,7 @@ public class GameBehaviour : MonoBehaviour
         if (demoMode)
             return;
 
-        if (Input.GetMouseButtonDown(0) && !settingsPanel.activeSelf)
+        if (Input.GetMouseButtonDown(0) && !settingsPanel.activeSelf && !infoPanel.activeSelf)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits = Physics.RaycastAll(ray, float.MaxValue, ~(1 << 9)).OrderBy(h=>h.distance).ToArray();
