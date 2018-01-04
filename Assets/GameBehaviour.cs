@@ -267,7 +267,7 @@ public class GameBehaviour : MonoBehaviour
         if (demoMode)
             return;
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !settingsPanel.activeSelf)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits = Physics.RaycastAll(ray, float.MaxValue, ~(1 << 9)).OrderBy(h=>h.distance).ToArray();
@@ -305,10 +305,6 @@ public class GameBehaviour : MonoBehaviour
             moves.Enqueue(new Vector3(0, 1, 0));
         else if (Input.GetKeyDown(KeyCode.E))
             moves.Enqueue(new Vector3(0, -1, 0));
-        else
-        {
-            // show help menu listing possible keys
-        }
 
         MoveCubes();
     }
