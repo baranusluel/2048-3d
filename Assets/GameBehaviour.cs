@@ -46,7 +46,45 @@ public class GameBehaviour : MonoBehaviour
     void Start()
     {
         if (mainMenu)
+        {
             demoMode = true;
+            GameObject.Find("Main Camera").GetComponent<Camera>().rect = new Rect(0, 0, 1, 1);
+            GameObject.Find("Game Canvas").SetActive(false);
+            GameObject.Find("Start Button").GetComponent<Button>().onClick.AddListener(() => StartButtonCallback());
+        }
+        else
+        {
+            GameObject.Find("Main Menu Canvas").SetActive(false);
+            slider = GameObject.Find("Slider").GetComponent<Slider>();
+            int old = PlayerPrefs.GetInt("sensitivity");
+            if (old != 0)
+            {
+                slider.value = old;
+                sensitivitySlider = Math.Pow(old / 5.0, 3.0 / 2.0);
+            }
+            slider.onValueChanged.AddListener(delegate { SliderCallback(slider.value); });
+
+            settingsPanel = GameObject.Find("Settings Panel");
+            settingsPanel.SetActive(false);
+            infoPanel = GameObject.Find("Info Panel");
+            infoPanel.SetActive(false);
+
+            notificationPanel = GameObject.Find("Notification Panel");
+            notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
+
+            GameObject.Find("New Game Button").GetComponent<Button>().onClick.AddListener(() => NewGameButtonCallback());
+            GameObject.Find("Settings Button").GetComponent<Button>().onClick.AddListener(() => SettingsButtonCallback());
+            GameObject.Find("Info Button").GetComponent<Button>().onClick.AddListener(() => InfoButtonCallback());
+            Button back = settingsPanel.GetComponentInChildren<Button>();
+            back.onClick.AddListener(() => BackButtonCallback(back));
+            Button back2 = infoPanel.GetComponentInChildren<Button>();
+            back2.onClick.AddListener(() => BackButtonCallback(back2));
+
+            scoreText = GameObject.Find("Score Text").GetComponent<Text>();
+            highscoreText = GameObject.Find("Best Score Text").GetComponent<Text>();
+            highscore = PlayerPrefs.GetInt("highscore");
+            highscoreText.text = highscore.ToString();
+        }
 
         CameraRotation.demoMode = demoMode;
         CameraRotation.speed = rotationSpeed;
@@ -54,37 +92,6 @@ public class GameBehaviour : MonoBehaviour
         CameraRotation.startupSpeed = startupAnimationSpeed;
         CubeBehaviour.moveSpeed = cubeMoveSpeed;
         CubeBehaviour.spawnSpeed = cubeSpawnSpeed;
-
-        slider = GameObject.Find("Slider").GetComponent<Slider>();
-        int old = PlayerPrefs.GetInt("sensitivity");
-        if (old != 0)
-        {
-            slider.value = old;
-            sensitivitySlider = Math.Pow(old / 5.0, 3.0 / 2.0);
-        }
-        slider.onValueChanged.AddListener(delegate { SliderCallback(slider.value); });
-
-        settingsPanel = GameObject.Find("Settings Panel");
-        settingsPanel.SetActive(false);
-        infoPanel = GameObject.Find("Info Panel");
-        infoPanel.SetActive(false);
-
-        notificationPanel = GameObject.Find("Notification Panel");
-        notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
-
-        GameObject.Find("New Game Button").GetComponent<Button>().onClick.AddListener(() => NewGameButtonCallback());
-        GameObject.Find("Settings Button").GetComponent<Button>().onClick.AddListener(() => SettingsButtonCallback());
-        GameObject.Find("Info Button").GetComponent<Button>().onClick.AddListener(() => InfoButtonCallback());
-        Button back = settingsPanel.GetComponentInChildren<Button>();
-        back.onClick.AddListener(() => BackButtonCallback(back));
-        Button back2 = infoPanel.GetComponentInChildren<Button>();
-        back2.onClick.AddListener(() => BackButtonCallback(back2));
-        GameObject.Find("Start Button").GetComponent<Button>().onClick.AddListener(() => StartButtonCallback());
-
-        scoreText = GameObject.Find("Score Text").GetComponent<Text>();
-        highscoreText = GameObject.Find("Best Score Text").GetComponent<Text>();
-        highscore = PlayerPrefs.GetInt("highscore");
-        highscoreText.text = highscore.ToString();
 
         #if !UNITY_EDITOR
             if (generationMode == GenerationModes.testingWon || generationMode == GenerationModes.testingLost || generationMode == GenerationModes.testingOther)
@@ -95,10 +102,7 @@ public class GameBehaviour : MonoBehaviour
         if (!demoMode)
             InitializeArrows();
         else
-        {
             generationMode = GenerationModes.demo;
-            GameObject.Find("Game Canvas").SetActive(false); // Disable UI Canvas if demoMode
-        }
 
         StartCoroutine(InitializeCubes());
     }
