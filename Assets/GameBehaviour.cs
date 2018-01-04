@@ -41,9 +41,13 @@ public class GameBehaviour : MonoBehaviour
     int highscore = 0;
     Text scoreText;
     Text highscoreText;
+    public static bool mainMenu = true;
 
     void Start()
     {
+        if (mainMenu)
+            demoMode = true;
+
         CameraRotation.demoMode = demoMode;
         CameraRotation.speed = rotationSpeed;
         CameraRotation.startAngle = startAngle;
@@ -75,6 +79,7 @@ public class GameBehaviour : MonoBehaviour
         back.onClick.AddListener(() => BackButtonCallback(back));
         Button back2 = infoPanel.GetComponentInChildren<Button>();
         back2.onClick.AddListener(() => BackButtonCallback(back2));
+        GameObject.Find("Start Button").GetComponent<Button>().onClick.AddListener(() => StartButtonCallback());
 
         scoreText = GameObject.Find("Score Text").GetComponent<Text>();
         highscoreText = GameObject.Find("Best Score Text").GetComponent<Text>();
@@ -82,7 +87,8 @@ public class GameBehaviour : MonoBehaviour
         highscoreText.text = highscore.ToString();
 
         #if !UNITY_EDITOR
-            generationMode = GenerationModes.normal;
+            if (generationMode == GenerationModes.testingWon || generationMode == GenerationModes.testingLost || generationMode == GenerationModes.testingOther)
+                generationMode = GenerationModes.normal;
         #endif
 
         InitializeGrid();
@@ -269,6 +275,12 @@ public class GameBehaviour : MonoBehaviour
     void BackButtonCallback(Button btn)
     {
         btn.transform.parent.gameObject.SetActive(false);
+    }
+
+    void StartButtonCallback()
+    {
+        mainMenu = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void Update ()
