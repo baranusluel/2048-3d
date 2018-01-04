@@ -3659,9 +3659,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Rotate the grid by sliding your finger. Move the cubes by tapping on the
-    arrows. When two cubes with the same number collide, they merge into one and add
-    to your score. Try to get the highest score you can!
+  m_Text: <Tutorial>
 --- !u!222 &1089526387
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5488,7 +5486,7 @@ MonoBehaviour:
   demoMode: 0
   rotationSpeed: 500000
   cubeMoveSpeed: 50
-  generationMode: 3
+  generationMode: 0
   startAngle: 30
   startupAnimationSpeed: 40
   cubeSpawnSpeed: 8

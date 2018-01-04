@@ -72,6 +72,13 @@ public class GameBehaviour : MonoBehaviour
             settingsPanel = GameObject.Find("Settings Panel");
             settingsPanel.SetActive(false);
             infoPanel = GameObject.Find("Info Panel");
+            String howto;
+            #if UNITY_ANDROID || UNITY_IOS
+                howto = "Rotate the grid by sliding your finger. Move the cubes by tapping on the arrows. When two cubes with the same number collide, they merge into one and add to your score. Try to get the highest score you can!";
+            #else
+                howto = "Rotate the grid by dragging your mouse. Move the cubes with the W, A, S, D, Q, E keys. When two cubes with the same number collide, they merge into one and add to your score. Try to get the highest score you can!";
+            #endif
+            infoPanel.transform.Find("How Text").GetComponent<Text>().text = howto;
             infoPanel.SetActive(false);
             notificationPanel = GameObject.Find("Notification Panel");
             notificationPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -36);
@@ -304,8 +311,7 @@ public class GameBehaviour : MonoBehaviour
             {
                 clickedArrow = hits[0].transform;
                 clickedArrow.localScale = new Vector3(1.05f, 1.05f, 1.05f);
-                Color clr = clickedArrow.gameObject.GetComponent<Renderer>().material.color + new Color(0.2f, 0.2f, 0.2f, 0.2f);
-                clickedArrow.gameObject.GetComponent<Renderer>().material.color = clr;
+                clickedArrow.gameObject.GetComponent<Renderer>().material.color = new Color(187 / 255f + 0.2f, 173 / 255f + 0.2f, 160 / 255f + 0.2f, 101 / 255f + 0.2f);
             }
         }
         else if (Input.GetMouseButtonUp(0) && clickedArrow != null)
@@ -317,8 +323,7 @@ public class GameBehaviour : MonoBehaviour
                 moves.Enqueue(clickedArrow.TransformDirection(new Vector3(0, 1, 0)));
             }
             clickedArrow.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            Color clr = clickedArrow.gameObject.GetComponent<Renderer>().material.color - new Color(0.2f, 0.2f, 0.2f, 0.2f);
-            clickedArrow.gameObject.GetComponent<Renderer>().material.color = clr;
+            clickedArrow.gameObject.GetComponent<Renderer>().material.color = new Color(187 / 255f, 173 / 255f, 160 / 255f, 101 / 255f);
             clickedArrow = null;
         }
 
