@@ -5490,6 +5490,7 @@ MonoBehaviour:
   startAngle: 30
   startupAnimationSpeed: 40
   cubeSpawnSpeed: 8
+  numGenerateOnMove: 4
 --- !u!4 &1616743498
 Transform:
   m_ObjectHideFlags: 0

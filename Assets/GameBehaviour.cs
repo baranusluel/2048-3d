@@ -36,7 +36,7 @@ public class GameBehaviour : MonoBehaviour
     public static GameObject notificationPanel;
     public static bool won = false;
     bool lost = false;
-    int generateNum = 3;
+    public int numGenerateOnMove = 1;
     int score = 0;
     int highscore = 0;
     Text scoreText;
@@ -157,7 +157,7 @@ public class GameBehaviour : MonoBehaviour
                 {
                     if (x + y - z < 2)
                     {
-                        values[x, y, z] = (int)Mathf.Pow(2, Mathf.RoundToInt((float)(UnityEngine.Random.value * /*11->2048*/ 9 + 0.5)));
+                        values[x, y, z] = (int)Mathf.Pow(2, Mathf.RoundToInt((float)(UnityEngine.Random.value * /*11->2048*/ 11.2 + 0.5)));
                         Transform t = Instantiate(cube, new Vector3(2 * x, 2 * y, 2 * z), Quaternion.identity);
                         cubes[x, y, z] = t;
                         t.GetComponent<CubeBehaviour>().SetValue(values[x, y, z]);
@@ -411,7 +411,7 @@ public class GameBehaviour : MonoBehaviour
 
     void GenerateCube()
     {
-        for (int i = 0; i < generateNum; i++)
+        for (int i = 0; i < numGenerateOnMove; i++)
         {
             List<int[]> coords = FindEmpty();
             if (coords.Count > 0)
