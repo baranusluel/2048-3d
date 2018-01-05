@@ -29,6 +29,32 @@
   position: absolute;
 }
 
+.play-btn {
+  display: block;
+  margin-left: 50%;
+  transform: translate(-50%, 0%);
+  width: 200px;
+  height: 100px;
+  border-radius: 8px;
+  background-color: #8F7A66;
+  color: white;
+  font-family: ClearSans;
+  font-size: 1.5em;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.btn-label {
+  
+}
+
+@font-face {
+  font-family: ClearSans;
+  src: url("ClearSans-Bold.woff");
+}
+
 .logo {
   width: 80%;
   height: auto;
