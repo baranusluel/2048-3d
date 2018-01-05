@@ -448,27 +448,34 @@ public class GameBehaviour : MonoBehaviour
     public void CheckLose()
     {
         List<int[]> coords = FindEmpty();
-        if (coords.Count == 0)
+        if (coords.Count > 0)
+            return;
+        for (int x = 0; x < 4; x++)
         {
-            for (int x = 0; x < 4; x++)
+            for (int y = 0; y < 4; y++)
             {
-                for (int y = 0; y < 4; y++)
+                for (int z = 0; z < 4; z++)
                 {
-                    for (int z = 0; z < 4; z++)
+                    int val = values[x, y, z];
+                    int[] adjacent = new int[6];
+                    for (int axis = 0; axis < 3; axis++)
                     {
-                        int val = values[x, y, z];
-                        int[] adjacent = { values[BoundToRange(x + 1), BoundToRange(y), BoundToRange(z)], values[BoundToRange(x - 1), BoundToRange(y), BoundToRange(z)],
-                            values[BoundToRange(x), BoundToRange(y + 1), BoundToRange(z)], values[BoundToRange(x), BoundToRange(y - 1), BoundToRange(z)],
-                            values[BoundToRange(x), BoundToRange(y), BoundToRange(z + 1)], values[BoundToRange(x), BoundToRange(y), BoundToRange(z - 1)] };
-                        if (Array.IndexOf(adjacent, val) < 0)
+                        for (int sign = -1; sign <= 1; sign = sign + 2)
                         {
-                            LoseGame();
-                            return;
+                            int x_adj = x + (axis == 0 ? sign : 0);
+                            int y_adj = y + (axis == 1 ? sign : 0);
+                            int z_adj = z + (axis == 2 ? sign : 0);
+                            if (x_adj < 0 || y_adj < 0 || z_adj < 0 || x_adj > 3 || y_adj > 3 || z_adj > 3)
+                                continue;
+                            adjacent[axis * 2 + (sign + 1) / 2] = values[x_adj, y_adj, z_adj];
                         }
                     }
+                    if (Array.IndexOf(adjacent, val) >= 0)
+                        return;
                 }
             }
         }
+        LoseGame();
     }
 
     public int BoundToRange(int val)
