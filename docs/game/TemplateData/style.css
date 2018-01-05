@@ -1,0 +1,59 @@
+html, body, .webgl-content, .webgl-content * {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+#gameContainer{
+  width: 100%;
+  height: 100%;
+}
+
+
+/* Following adapted from: https://ocias.com/blog/unity-webgl-custom-progress-bar/ */
+
+div#loadingBox {
+  width: 100%;
+  height: 20px;
+  position: absolute;
+  top: 50%;
+  margin-top: -10px;
+  text-align: center;
+}
+div#bgBar {
+  position: absolute;
+  width: 200px;
+  margin-left: -100px;
+  left: 50%;
+  height: 4px;
+  display: block;
+  background-color: #333;
+  border-radius: 2px;
+}
+div#progressBar {
+  left: 50%;
+  position: absolute;
+  margin-left: -100px;
+  width: 0px;
+  height: 4px;
+  background-color: #ffea0f;
+  border-radius: 2px;
+}
+p#loadingInfo {
+  color: #666;
+  letter-spacing: 1px;
+  position: absolute;
+  width: 100%;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 10px;
+  margin-top: 10px;
+}
+
+#spinner{
+  margin: 10px;
+  overflow: visible;
+}
