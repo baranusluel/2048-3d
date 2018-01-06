@@ -5,17 +5,20 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>2048 3D</title>
     <!-- add favicon -->
-    <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="style.home.css">
   </head>
   <body>
-    <div class="background"><div class="blur">
-      <div class="vertical-align">
-        <div class="container">
-          <img src="logo.png" class="logo"><br><br><br><br>
-          <a href="./game"><button type="button" class="btn play-btn">Launch Game</button></a>
+    <div class="background">
+      <div class="blur">
+        <div class="flex-container">
+          <div class="flex-item logo-flex"><img src="logo.png" class="logo"></div>
+          <div class="flex-item play-btn-flex"><a href="./game"><div class="play-btn">Launch Game</div></a></div>
+          <div class="flex-item app-btn-flex"><div class="app-btn-container">
+            <img src="google-play.png" onclick="alert('Coming soon')">
+            <img src="app-store.svg" onclick="alert('Coming soon')">
+          </div></div>
         </div>
-      </div></div>
+      </div>
     </div>
   </body>
 </html>
