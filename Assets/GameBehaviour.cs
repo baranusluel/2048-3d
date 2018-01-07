@@ -202,6 +202,11 @@ public class GameBehaviour : MonoBehaviour
     }
     void InitializeCubesOther()
     {
+        values[0, 0, 0] = 2048;
+        Transform t = Instantiate(cube, new Vector3(0, 0, 0), Quaternion.identity);
+        cubes[0, 0, 0] = t;
+        t.GetComponent<CubeBehaviour>().SetValue(2048);
+        /*
         for (int x = 0; x < 1; x++)
         {
             for (int y = 0; y < 1; y++)
@@ -219,7 +224,7 @@ public class GameBehaviour : MonoBehaviour
                     t.GetComponent<CubeBehaviour>().SetValue(values[x, y, z]);
                 }
             }
-        }
+        }*/
     }
 
     void InitializeArrows()
