@@ -9,7 +9,7 @@ public class CameraRotation : MonoBehaviour
     Camera cam;
     float width;
     float height;
-    int startingDist = 14;
+    int startingDist = 18;
 
     public static bool demoMode;
     public static TextMesh[] arrowLabels = new TextMesh[6];
