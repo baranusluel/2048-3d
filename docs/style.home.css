@@ -137,6 +137,10 @@ a:hover {
   }
 }
 
+.app-store-img {
+  opacity: 0.5;
+}
+
 body {
   margin: 0;
   padding: 0;
