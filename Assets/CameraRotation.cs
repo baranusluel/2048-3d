@@ -11,6 +11,7 @@ public class CameraRotation : MonoBehaviour
     float height;
     int startingDist = 18;
 
+    public static bool paused = false;
     public static bool demoMode;
     public static TextMesh[] arrowLabels = new TextMesh[6];
     public static float speed;
@@ -110,7 +111,7 @@ public class CameraRotation : MonoBehaviour
         if (width != Screen.width || height != Screen.height)
             AdjustDistance();
 
-        if (!demoMode && (Input.GetMouseButton(0) || Input.touchCount > 0))
+        if (!demoMode && !paused && (Input.GetMouseButton(0) || Input.touchCount > 0))
         {
             float deltaX = Input.GetAxis("Mouse X");
             float deltaY = Input.GetAxis("Mouse Y");

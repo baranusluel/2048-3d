@@ -1,0 +1,14 @@
+{
+"companyName": "Baran Usluel",
+"productName": "2048 3D",
+"dataUrl": "game.data.unityweb",
+"asmCodeUrl": "game.asm.code.unityweb",
+"asmMemoryUrl": "game.asm.memory.unityweb",
+"asmFrameworkUrl": "game.asm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Light",
+"backgroundColor": "#FFFFFF",
+"cacheControl": {"dataUrl": "must-revalidate"}
+}

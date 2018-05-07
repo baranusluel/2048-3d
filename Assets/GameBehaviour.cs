@@ -281,6 +281,7 @@ public class GameBehaviour : MonoBehaviour
     void SettingsButtonCallback()
     {
         settingsPanel.SetActive(true);
+        CameraRotation.paused = true;
         if (infoPanel.activeSelf)
             infoPanel.SetActive(false);
     }
@@ -288,6 +289,7 @@ public class GameBehaviour : MonoBehaviour
     void InfoButtonCallback()
     {
         infoPanel.SetActive(true);
+        CameraRotation.paused = true;
         if (settingsPanel.activeSelf)
             settingsPanel.SetActive(false);
     }
@@ -295,6 +297,7 @@ public class GameBehaviour : MonoBehaviour
     void BackButtonCallback(Button btn)
     {
         btn.transform.parent.gameObject.SetActive(false);
+        CameraRotation.paused = false;
     }
 
     void StartButtonCallback()
